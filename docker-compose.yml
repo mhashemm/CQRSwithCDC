@@ -22,11 +22,12 @@ services:
     image: debezium/connect:1.6
     container_name: connect
     environment:
-      GROUP_ID: 1
+      GROUP_ID: "cqrswithcdc"
       CONFIG_STORAGE_TOPIC: my_connect_configs
       OFFSET_STORAGE_TOPIC: my_connect_offsets
       STATUS_STORAGE_TOPIC: my_connect_statuses
       BOOTSTRAP_SERVERS: kafka:9092
+      CONNECT_VALUE_CONVERTER_SCHEMAS_ENABLE: "false"
     ports:
       - 8083:8083
     depends_on:
@@ -34,11 +35,11 @@ services:
       - kafka
       - db
 
-    # docker exec -it connect bash
-    # curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" connect:8083/connectors/ -d '{ "name": "cqrs-connector","config": {"connector.class": "io.debezium.connector.sqlserver.SqlServerConnector","database.hostname": "db","database.port": "1433","database.user": "sa","database.password": "P@ssW0rd!","database.dbname": "CQRSwithCDC_Write","database.server.name": "CQRSwithCDC_Write","table.include.list": "dbo.Students,dbo.Courses,dbo.Disenrollments,dbo.Enrollments","database.history.kafka.bootstrap.servers": "kafka:9092","database.history.kafka.topic": "dbhistory.CQRSwithCDC_Write" } }'
-
-    # to validate something work => curl -H "Accept:application/json" connect:8083/connectors/
-    # output should be => ["cqrs-connector"]
+  consumers:
+    build:
+      dockerfile: CQRSwithCDC.Read/Dockerfile
+      context: .
+    container_name: consumers
 
   db:
     build:
@@ -51,12 +52,3 @@ services:
       MSSQL_AGENT_ENABLED: "true"
     ports:
       - 1433:1433
-
-  # docker exec -it db /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P P@ssW0rd! -i ./CreateDbWrite.sql
-  # output should be =>
-  # Changed database context to 'master'.
-  # Changed database context to 'CQRSwithCDC_Write'.
-  # Changed database context to 'master'.
-  # Changed database context to 'CQRSwithCDC_Write'.
-  # Job 'cdc.CQRSwithCDC_Write_capture' started successfully.
-  # Job 'cdc.CQRSwithCDC_Write_cleanup' started successfully.
