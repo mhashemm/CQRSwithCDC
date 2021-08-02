@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using CQRSwithCDC.Logic.Commands;
 using CQRSwithCDC.Logic.Core;
@@ -22,10 +21,9 @@ namespace CQRSwithCDC.Logic.Handlers
 
 			foreach (var courseToRegister in request.RegisterDto.Courses)
 			{
-				if (!Enum.IsDefined(typeof(Grade), courseToRegister.Grade)) return ResultFactory.Fail("Grade is invalid");
 				var course = await _context.Courses.FindAsync(courseToRegister.CourseId);
 				if (course == null) return ResultFactory.Fail("No course with that id.");
-				student.Enroll(course, Enum.Parse<Grade>(courseToRegister.Grade));
+				student.Enroll(course, courseToRegister.Grade);
 			}
 			await _context.Students.AddAsync(student);
 			await _context.SaveAllAsync();

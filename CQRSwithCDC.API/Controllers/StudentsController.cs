@@ -21,6 +21,7 @@ namespace CQRSwithCDC.API.Controllers
 		[HttpPost]
 		public async Task<ActionResult<Result>> Register([FromBody] RegisterDto registerDto)
 		{
+			System.Console.WriteLine(registerDto);
 			return Ok(await _mediator.Send(new RegisterCommand(registerDto)));
 		}
 

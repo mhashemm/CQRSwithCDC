@@ -2,7 +2,7 @@ version: "3.8"
 services:
   zookeeper:
     image: debezium/zookeeper:1.6
-    container_name: zookeeper
+    container_name: cqrswithcdc-zookeeper
     ports:
       - 2181:2181
       - 2888:2888
@@ -10,7 +10,7 @@ services:
 
   kafka:
     image: debezium/kafka:1.6
-    container_name: kafka
+    container_name: cqrswithcdc-kafka
     environment:
       ZOOKEEPER_CONNECT: zookeeper:2181
     ports:
@@ -20,13 +20,14 @@ services:
 
   connect:
     image: debezium/connect:1.6
-    container_name: connect
+    container_name: cqrswithcdc-connect
     environment:
       GROUP_ID: "cqrswithcdc"
       CONFIG_STORAGE_TOPIC: my_connect_configs
       OFFSET_STORAGE_TOPIC: my_connect_offsets
       STATUS_STORAGE_TOPIC: my_connect_statuses
       BOOTSTRAP_SERVERS: kafka:9092
+      CONNECT_KEY_CONVERTER_SCHEMAS_ENABLE: "false"
       CONNECT_VALUE_CONVERTER_SCHEMAS_ENABLE: "false"
     ports:
       - 8083:8083
@@ -39,13 +40,13 @@ services:
     build:
       dockerfile: CQRSwithCDC.Read/Dockerfile
       context: .
-    container_name: consumers
+    container_name: cqrswithcdc-consumers
 
   db:
     build:
       dockerfile: Dockerfile.sqlserver
       context: .
-    container_name: db
+    container_name: cqrswithcdc-db
     environment:
       SA_PASSWORD: "P@ssW0rd!"
       ACCEPT_EULA: "Y"

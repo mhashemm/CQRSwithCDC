@@ -9,10 +9,10 @@ namespace CQRSwithCDC.Logic.Core
 		public string Name { get; set; }
 		public string Email { get; set; }
 
-		private readonly IList<Enrollment> _enrollments = new List<Enrollment>();
+		private readonly List<Enrollment> _enrollments = new();
 		public IReadOnlyList<Enrollment> Enrollments => _enrollments.ToList();
 
-		private readonly IList<Disenrollment> _disenrollments = new List<Disenrollment>();
+		private readonly List<Disenrollment> _disenrollments = new();
 		public IReadOnlyList<Disenrollment> Disenrollments => _disenrollments.ToList();
 
 		protected Student()
@@ -37,11 +37,11 @@ namespace CQRSwithCDC.Logic.Core
 		public void RemoveEnrollment(Enrollment enrollment, string comment)
 		{
 			_enrollments.Remove(enrollment);
-			var disenrollment = new Disenrollment(enrollment.Student, enrollment.Course, comment);
+			var disenrollment = new Disenrollment(this, enrollment.Course, comment);
 			_disenrollments.Add(disenrollment);
 		}
 
-		public void Enroll(Course course, Grade grade)
+		public void Enroll(Course course, byte grade)
 		{
 			if (_enrollments.Count >= 2)
 				throw new Exception("Cannot have more than 2 enrollments");

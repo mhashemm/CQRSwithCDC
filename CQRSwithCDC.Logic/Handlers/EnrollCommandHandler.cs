@@ -1,8 +1,6 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using CQRSwithCDC.Logic.Commands;
-using CQRSwithCDC.Logic.Core;
 using CQRSwithCDC.Logic.Infrastructure;
 using MediatR;
 
@@ -22,8 +20,7 @@ namespace CQRSwithCDC.Logic.Handlers
 			if (student == null) return ResultFactory.Fail("No student with that id.");
 			var course = await _context.Courses.FindAsync(request.EnrollDto.CourseId);
 			if (course == null) return ResultFactory.Fail("No course with that id.");
-			if (!Enum.IsDefined(typeof(Grade), request.EnrollDto.Grade)) return ResultFactory.Fail("Grade is invalid");
-			student.Enroll(course, Enum.Parse<Grade>(request.EnrollDto.Grade));
+			student.Enroll(course, request.EnrollDto.Grade);
 			await _context.SaveAllAsync();
 			return ResultFactory.Ok();
 		}

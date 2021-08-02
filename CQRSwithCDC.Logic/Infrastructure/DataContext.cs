@@ -11,7 +11,6 @@ namespace CQRSwithCDC.Logic.Infrastructure
 
 		public DataContext(DbContextOptions options) : base(options)
 		{
-			ChangeTracker.LazyLoadingEnabled = false;
 		}
 
 		protected override void OnModelCreating(ModelBuilder builder)
@@ -21,8 +20,10 @@ namespace CQRSwithCDC.Logic.Infrastructure
 				x.ToTable("Students").HasKey(s => s.Id);
 				x.Property(s => s.Id).HasColumnName("Id");
 				x.Property(s => s.Name).HasColumnName("Name");
-				x.HasMany(s => s.Enrollments).WithOne(e => e.Student);
-				x.HasMany(s => s.Disenrollments).WithOne(d => d.Student);
+				x.HasMany(s => s.Enrollments).WithOne(e => e.Student).OnDelete(DeleteBehavior.Cascade);
+				x.Navigation(s => s.Enrollments).AutoInclude();
+				x.HasMany(s => s.Disenrollments).WithOne(d => d.Student).OnDelete(DeleteBehavior.Cascade);
+				x.Navigation(s => s.Disenrollments).AutoInclude();
 			});
 			builder.Entity<Course>((x) =>
 			{
@@ -37,6 +38,7 @@ namespace CQRSwithCDC.Logic.Infrastructure
 				x.Property(e => e.Grade).HasColumnName("Grade");
 				x.HasOne(e => e.Student).WithMany(s => s.Enrollments);
 				x.HasOne(e => e.Course).WithMany();
+				x.Navigation(e => e.Course).AutoInclude();
 			});
 			builder.Entity<Disenrollment>((x) =>
 			{
