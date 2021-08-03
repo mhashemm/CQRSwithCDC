@@ -1,7 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using CQRSwithCDC.Logic.Commands;
 using CQRSwithCDC.Logic.Dtos;
 using CQRSwithCDC.Logic.Handlers;
+using CQRSwithCDC.Logic.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,10 +20,21 @@ namespace CQRSwithCDC.API.Controllers
 			_mediator = mediator;
 		}
 
+		[HttpGet]
+		public async Task<IEnumerable<StudentDto>> AllStudents()
+		{
+			return await _mediator.Send(new GetStudentsQuery());
+		}
+
+		[HttpGet("{id}")]
+		public async Task<StudentDto> Student(long id)
+		{
+			return await _mediator.Send(new GetStudentQuery(id));
+		}
+
 		[HttpPost]
 		public async Task<ActionResult<Result>> Register([FromBody] RegisterDto registerDto)
 		{
-			System.Console.WriteLine(registerDto);
 			return Ok(await _mediator.Send(new RegisterCommand(registerDto)));
 		}
 

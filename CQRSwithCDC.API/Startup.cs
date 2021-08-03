@@ -3,6 +3,7 @@ using CQRSwithCDC.Logic.Infrastructure;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,6 +29,8 @@ namespace CQRSwithCDC.API
 			{
 				options.UseSqlServer(Configuration.GetConnectionString("DbWrite"));
 			});
+
+			services.AddScoped((_) => new SqlConnection(Configuration.GetConnectionString("DbRead")));
 
 			services.AddMediatR(typeof(MediatREntry).Assembly);
 		}

@@ -17,6 +17,7 @@ namespace CQRSwithCDC.Read.Handlers
 		public async Task<bool> Handle(DeleteEnrollment request, CancellationToken cancellationToken)
 		{
 			var student = await _context.Students.FindAsync(request.Dto.StudentID);
+			if (student == null) return await Task.FromResult(true);
 			var course = await _context.Courses.FindAsync(request.Dto.CourseID);
 			if (student.FirstCourseName == course.Name)
 			{

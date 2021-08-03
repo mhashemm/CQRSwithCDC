@@ -44,7 +44,9 @@ namespace CQRSwithCDC.Logic.Core
 		public void Enroll(Course course, byte grade)
 		{
 			if (_enrollments.Count >= 2)
-				throw new Exception("Cannot have more than 2 enrollments");
+				throw new Exception("Cannot have more than 2 enrollments.");
+			if (_enrollments.FirstOrDefault(e => e.Course == course) != null)
+				throw new Exception("Cannot enroll in the same course twice.");
 
 			var enrollment = new Enrollment(this, course, grade);
 			_enrollments.Add(enrollment);

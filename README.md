@@ -18,5 +18,6 @@ curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 
 ```
 Then press CTRL+D and run the following
 ```
-docker compose up consumers --build
+docker compose up api consumers --build
 ```
+Postman collection [CQRSwithCDC.postman_collection.json](./CQRSwithCDC.postman_collection.json)

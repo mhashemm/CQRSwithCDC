@@ -53,3 +53,11 @@ services:
       MSSQL_AGENT_ENABLED: "true"
     ports:
       - 1433:1433
+
+  api:
+    build:
+      dockerfile: CQRSwithCDC.API/Dockerfile
+      context: .
+    container_name: cqrswithcdc-api
+    ports:
+      - 5000:80
